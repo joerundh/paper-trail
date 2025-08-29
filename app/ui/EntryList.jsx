@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Paginator from "./Paginator";
 import { useUser } from "@clerk/nextjs";
 import usePaperTrail from "../lib/usePaperTrail";
+import EntryListItem from "./EntryListItem";
 
 export default function EntryList({ userId }) {
     /*
@@ -35,7 +36,11 @@ export default function EntryList({ userId }) {
                 ) :
                     data.entries.length ? (
                         <ul className={"w-full flex flex-col gap-[10px] p-0"}>
-
+                            {
+                                data.entries.map((entry, index) => (
+                                    <EntryListItem entry={entry} key={index} />
+                                ))
+                            }
                         </ul>
                     ) :
                         <p className={"w-full text-center text-sm"}>No entries found.</p>

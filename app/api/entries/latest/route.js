@@ -11,7 +11,7 @@ export async function GET(request) {
 
     // Define offset and limit
     const offset = req.offset || 0;
-    const limit = req.limit || 10;
+    const limit = req.limit || 5;
 
     try {
         const db = await connectToDatabase();

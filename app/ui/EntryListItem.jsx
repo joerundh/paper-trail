@@ -3,21 +3,47 @@ import { useState } from "react"
 
 import articleIcon from "@/public/article-icon.png";
 import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
 
-export default async function EntryListItem({ entry }) {
+export default function EntryListItem({ entry }) {
     const { user, isLoading, error } = useUser();
 
     const [ editing, setEditing ] = useState(false);
 
+    const [ title, setTitle ] = useState(entry.title);
+    const [ description, setDescription ] = useState(entry.description);
+    const [ url, setUrl ] = useState(entry.url);
+    const [ makePublic, setMakePublic ] = useState(entry.isPublic);
+
+    if (editing) {
+        return (
+            <></>
+        )
+    }
+
     return (
-        <li className={"w-full [border:_1px_solid_#b0b0b0] rounded-sm p-[10px] flex flex-row gap-[10px] align-top"}>
-            <div className={"w-fit h-fit"}>
-                <Image src={articleIcon} width={50} height={50} />
+        <li className={"w-full [border:_1px_solid_#b0b0b0] rounded-sm p-[10px] flex flex-col gap-[10px]"}>
+            <div className={"w-full flex flex-row gap-[10px]"}>
+                <Image src={articleIcon} width={100} height={117} alt={"Article icon"} />
+                <div className={"w-full flex flex-col gap-[10px]"}>
+                    <h4 className={"w-full text-lg font-bold"}>{entry.title}</h4>
+                    <p className={"text-sm"}>added by <Link href={`/user/${entry.userId}`} className={"font-bold hover:underline"}>{user ? user.id === entry.userId ? "you" : entry.userFullName : entry.userFullName}</Link></p>
+                    {
+                        user && user.id === entry.userId ? (
+                            <div className={"flex flex-row gap-[10px] justify-center items-center"}>
+                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px]"}>Edit</button>
+                                <button>Delete</button>
+                            </div>
+                        ) : <></>
+                    }
+                </div>
             </div>
             <div className={"flex flex-col gap-[10px]"}>
-                <h4 className={"size-[14px]"}>{entry.title}</h4>
-                <p>added by <b>{ entry.userId === user.id ? "you" : entry.userFullName }</b></p>
-                <p>{entry.description}</p>
+                <p><b>Link:</b> <Link href={entry.url} className={"hover:underline"} target={"_blank"}>{entry.url}</Link></p>
+                <div>
+                    <h5 className={"font-bold"}>Description:</h5>
+                    <p>{entry.description}</p>
+                </div>
             </div>
         </li>
     )
