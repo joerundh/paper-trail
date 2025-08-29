@@ -5,7 +5,7 @@ import articleIcon from "@/public/article-icon.png";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
-export default function EntryListItem({ entry }) {
+export default function EntryListItem({ entry, reloader }) {
     const { user, isLoading, error } = useUser();
 
     const [ editing, setEditing ] = useState(false);
@@ -15,10 +15,23 @@ export default function EntryListItem({ entry }) {
     const [ url, setUrl ] = useState(entry.url);
     const [ makePublic, setMakePublic ] = useState(entry.isPublic);
 
-    if (editing) {
-        return (
-            <></>
-        )
+    const deleteEntry = async () => {
+        if (confirm("Are you sure you want to delete the entry?")) {
+            const params = new URLSearchParams();
+            params.append("clientId", user.id);
+            params.append("entryId", entry._id);
+
+            const res = await fetch(`/api/delete?${params.toString()}`, {
+                cache: "no-cache",
+                method: "DELETE"
+            });
+            if (!res.ok) {
+                alert("An error occurred, try again later.");
+                return;
+            }
+            reloader();
+            alert("Entry successfully deleted.")
+        }
     }
 
     return (
@@ -31,8 +44,8 @@ export default function EntryListItem({ entry }) {
                     {
                         user && user.id === entry.userId ? (
                             <div className={"flex flex-row gap-[10px]"}>
-                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center"}><Image src={"/pencil-icon.png"} alt={"Edit icon"} width={15} height={15} /> Edit</button>
-                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center"}><Image src={"/recycle-bin-icon.png"} alt={"Delete icon"} width={15} height={15} /> Delete</button>
+                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center cursor-pointer"}><Image src={"/pencil-icon.png"} alt={"Edit icon"} width={15} height={15} /> Edit</button>
+                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center cursor-pointer"} onClick={deleteEntry}><Image src={"/recycle-bin-icon.png"} alt={"Delete icon"} width={15} height={15} /> Delete</button>
                             </div>
                         ) : <></>
                     }

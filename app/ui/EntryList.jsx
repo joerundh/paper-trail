@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import Paginator from "./Paginator";
 import { useUser } from "@clerk/nextjs";
 import usePaperTrail from "../lib/usePaperTrail";
@@ -14,8 +14,9 @@ export default function EntryList({ userId }) {
 
     const [ page, setPage ] = useState(0);
     const [ perPage, setPerPage ] = useState(5);
+    const count = useRef(0);
 
-    const [ data, isLoading, error ] = usePaperTrail({
+    const [ data, isLoading, error, reload ] = usePaperTrail({
         url: `/api/entries/${userId ? "user" : "latest"}`,
         userId: userId || undefined,
         page: page,
@@ -28,17 +29,21 @@ export default function EntryList({ userId }) {
         )
     }
 
+    if (!isLoading) {
+        count.current = data.count || 0;
+    }
+
     return (
-        <Paginator page={page} pageSetter={setPage} perPage={perPage} perPageSetter={setPerPage}>
+        <Paginator count={count} page={page} pageSetter={setPage} perPage={perPage} perPageSetter={setPerPage}>
             {
                 isLoading ? (
                     <p className={"w-full text-center text-sm"}>Loading entries...</p>
                 ) :
-                    data.entries.length ? (
+                    count ? (
                         <ul className={"w-full flex flex-col gap-[10px] p-0"}>
                             {
                                 data.entries.map((entry, index) => (
-                                    <EntryListItem entry={entry} key={index} />
+                                    <EntryListItem entry={entry} reloader={reload} key={index} />
                                 ))
                             }
                         </ul>

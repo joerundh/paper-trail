@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/app/lib/mongoDBconnect";
-import { auth } from "@clerk/nextjs/dist/types/server";
+import { auth } from "@clerk/nextjs/server";
+import { ObjectId } from "mongodb";
 
 /*
 Checks whether the user is logged in. If they are, then okay for now.
@@ -11,32 +12,34 @@ access is denied.
 If the users match, then it may proceed.
 */
 
-export default async function DELETE(request) {
+export async function DELETE(request) {
     // Access check
     const { userId: clientId } = await auth();
     if (!clientId) {
         return Response.json({ message: "Access denied." }, { status: 401 });
     }
 
-    const req = await request.nextUrl.searchParams.entries().map((acc, [key, value]) => { acc[key] = value; return acc; }, {});
-    if (!req.clientId) {
+    const params = await request.nextUrl.searchParams;
+
+    if (!params.has("clientId")) {
         return Response.json({ message: "Access denied." }, { status: 401 });
     }
-    if (req.clientId !== clientId) {
-        return Response.json({ message: "Access denied." }, { status: 401 });
+    if (params.get("clientId") !== clientId) {
+        return Response.json({ message: "User ID mismatch." }, { status: 401 });
     }
 
     // If the request has no entry ID, throw bad request
-    if (!req.entryId) {
+    if (!params.has("entryId")) {
         return Response.json({ message: "No entry ID provided." }, { status: 400 });
     }
 
     // All good so far, time to remove from the database
     try {
         const db = await connectToDatabase();
-        const entries = db.collection("entries");
+        const entries = await db.collection("entries");
 
-        
+        await entries.deleteOne({ _id: ObjectId.createFromHexString(params.get("entryId")) });
+        return Response.json({ message: "Entry deleted." })
     }
     catch (e) {
         return Response.json({ message: "An error occurred." }, { status: 500 });

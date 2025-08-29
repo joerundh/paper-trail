@@ -19,23 +19,35 @@ export default function usePaperTrail(obj) {
 
     const isLoading = !(data || error);
 
+    const reload = () => {
+        setData(null);
+    }
+
+
+
     useEffect(() => {
         (async () => {
             const params = new URLSearchParams();
             if (obj.userId) {
                 params.append("userId", obj.userId);
             }
-            params.append("page", obj.page || 0);
-            params.append("perPage", obj.perPage || 5);
-
-            const res = await fetch(`${obj.url}?${params.toString()}`);            
-            if (!res.ok) {
-                setError({ message: "An error occurred." })
+            if (obj.page) {
+                params.append("page", obj.page);
             }
+            if (obj.perPage) {
+                params.append("page", obj.perPage);
+            }
+
+            const res = await fetch(`${obj.url}${params.size ? "?" : ""}${params.toString()}`);
+
+            if (!res.ok) {
+               setError({ message: "An error occurred." });
+            }
+
             const json = await res.json();
             setData(json);
         })();
-    }, []);
+    }, [ data ]);
 
-    return [ data, isLoading, error ];
+    return [ data, isLoading, error, reload ];
 }

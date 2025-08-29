@@ -22,7 +22,7 @@ export async function GET(request) {
                             .skip(offset)                           // Self-explanatory
                             .limit(limit)                           // Ditto
                             .toArray();
-        const count = entries.countDocuments({ isPublic: true });
+        const count = await entries.countDocuments({ isPublic: true });
         
         return Response.json({ count: count, entries: results });
     }
