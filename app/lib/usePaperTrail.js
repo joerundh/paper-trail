@@ -39,13 +39,13 @@ export default function usePaperTrail(obj) {
             const res = await fetch(`${obj.url}${params.size ? "?" : ""}${params.toString()}`);
 
             if (!res.ok) {
-               setError({ message: "An error occurred." });
+            setError({ message: "An error occurred." });
             }
 
             const json = await res.json();
             setData(json);
         })();
-    }, [ data ]);
+    }, []);
 
     return [ data, isLoading, error, reload ];
 }

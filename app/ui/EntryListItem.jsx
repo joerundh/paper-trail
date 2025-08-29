@@ -8,6 +8,8 @@ import Link from "next/link";
 export default function EntryListItem({ entry, reloader }) {
     const { user, isLoading, error } = useUser();
 
+    const [ fullDescription, setFullDescription ] = useState(false);
+
     const [ editing, setEditing ] = useState(false);
 
     const [ title, setTitle ] = useState(entry.title);
@@ -34,6 +36,16 @@ export default function EntryListItem({ entry, reloader }) {
         }
     }
 
+    const cutoffDescriptionCss = {
+        height: 100,
+        overflow: "hidden",
+        background: "linear-gradient(transparent 150px, white)"
+    };
+    const fullDescriptionCss = {
+        height: "fit-content",
+        mask: "none"
+    }
+
     return (
         <li className={"w-full [border:_1px_solid_#b0b0b0] rounded-sm p-[10px] flex flex-col gap-[10px]"}>
             <div className={"w-full flex flex-row gap-[10px]"}>
@@ -55,7 +67,7 @@ export default function EntryListItem({ entry, reloader }) {
                 <p><b>Link:</b> <Link href={entry.url} className={"hover:underline"} target={"_blank"}>{entry.url}</Link></p>
                 <div>
                     <h5 className={"font-bold"}>Description:</h5>
-                    <p>{entry.description}</p>
+                    <p className={"cursor-pointer"} style={fullDescription ? fullDescriptionCss : cutoffDescriptionCss} onClick={() => setFullDescription(!fullDescription)}>{entry.description}</p>
                 </div>
             </div>
         </li>
