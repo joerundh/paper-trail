@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import usePaperTrail from "../lib/usePaperTrail";
 import EntryListItem from "./EntryListItem";
 
-export default function EntryList({ userId }) {
+export default function EntryList({ userId, viewUsers }) {
     /*
     A lack of a provided userId is interpreted as from all users, i.e. /latest
     */
@@ -47,7 +47,7 @@ export default function EntryList({ userId }) {
                         <ul className={"w-full flex flex-col gap-[10px] p-0"}>
                             {
                                 data.entries.map((entry, index) => (
-                                    <EntryListItem entry={entry} reloader={reload} key={index} />
+                                    <EntryListItem entry={entry} reloader={reload} key={index} viewUser={viewUsers} />
                                 ))
                             }
                         </ul>

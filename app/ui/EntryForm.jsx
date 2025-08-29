@@ -9,12 +9,12 @@ export default function EntryForm({ userId }) {
     const [ submitted, setSubmitted ] = useState(false);
 
     const [ title, setTitle ] = useState("");
-    const [ description, setDescription ] = useState("");
+    const [ abstract, setAbstract ] = useState("");
     const [ url, setUrl ] = useState("");
     const [ makePublic, setMakePublic ] = useState(true);
 
     const [ titleMissing, setTitleMissing ] = useState(false);
-    const [ descriptionMissing, setDescriptionMissing ] = useState(false);
+    const [ abstractMissing, setAbstractMissing ] = useState(false);
     const [ urlMissing, setUrlMissing ] = useState(false);
 
     const [ error, setError ] = useState(false);
@@ -25,9 +25,9 @@ export default function EntryForm({ userId }) {
                 <p className={"w-full text-sm"}>A title is missing!</p>
             )
         }
-        if (descriptionMissing) {
+        if (abstractMissing) {
             return (
-                <p className={"w-full text-sm"}>A description is missing!</p>
+                <p className={"w-full text-sm"}>An abstract is missing!</p>
             )
         }
         if (urlMissing) {
@@ -50,8 +50,8 @@ export default function EntryForm({ userId }) {
             setTitleMissing(true);
             return;
         }
-        if (description === "") {
-            setDescriptionMissing(true);
+        if (abstract === "") {
+            abstractMissing(true);
             return;
         }
         if (url === "") {
@@ -59,13 +59,13 @@ export default function EntryForm({ userId }) {
             return;
         }
 
-        const res = await fetch("/api/post", {
+        const res = await fetch("/api/add", {
             method: "POST",
             body: JSON.stringify({
                 userId: user.id,
-                userFullName: user.fullName,
+                userFirstName: user.firstName,
                 title: title,
-                description: description,
+                abstract: abstract,
                 url: url,
                 makePublic: makePublic
             })
@@ -79,7 +79,7 @@ export default function EntryForm({ userId }) {
 
     const clearForm = () => {
         setTitle("");
-        setDescription("");
+        setAbstract("");
         setUrl("");
         setMakePublic(true);
     }
@@ -93,8 +93,8 @@ export default function EntryForm({ userId }) {
     }, [ title ]);
 
     useEffect(() => {
-        setDescriptionMissing(false);
-    }, [ description ]);
+        abstractMissing(false);
+    }, [ abstract ]);
 
     useEffect(() => {
         setUrlMissing(false)
@@ -128,8 +128,8 @@ export default function EntryForm({ userId }) {
                     <input type="text" value={title} onChange={e => setTitle(e.target.value)} className={`w-[480px] px-[3px] [border:_1px_solid_black] rounded-sm ${titleMissing ? "bg-[#ffe0e0]" : ""}`} />
                 </label>
                 <label className={"flex flex-row justify-start items-start gap-[5px]"}>
-                    <span className={"w-[90px]"}>Description:</span>
-                    <textarea value={description} onChange={e => setDescription(e.target.value)} className={`w-[480px] h-[200px] px-[3px] [border:_1px_solid_black] resize-y rounded-sm outline-none ${descriptionMissing ? "bg-[#ffe0e0]" : ""}`}></textarea>
+                    <span className={"w-[90px]"}>Abstract:</span>
+                    <textarea value={abstract} onChange={e => setAbstract(e.target.value)} className={`w-[480px] h-[200px] px-[3px] [border:_1px_solid_black] resize-y rounded-sm outline-none ${abstractMissing ? "bg-[#ffe0e0]" : ""}`}></textarea>
                 </label>
                 <label className={"flex flex-row justify-start items-start gap-[5px]"}>
                     <span className={"w-[90px]"}>URL:</span>

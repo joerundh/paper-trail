@@ -5,15 +5,15 @@ import articleIcon from "@/public/article-icon.png";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
-export default function EntryListItem({ entry, reloader }) {
+export default function EntryListItem({ entry, viewUser, reloader }) {
     const { user, isLoading, error } = useUser();
 
-    const [ fullDescription, setFullDescription ] = useState(false);
+    const [ viewAbstract, setViewAbstract ] = useState(false);
 
     const [ editing, setEditing ] = useState(false);
 
     const [ title, setTitle ] = useState(entry.title);
-    const [ description, setDescription ] = useState(entry.description);
+    const [ abstract, setAbstract ] = useState(entry.abstract);
     const [ url, setUrl ] = useState(entry.url);
     const [ makePublic, setMakePublic ] = useState(entry.isPublic);
 
@@ -40,15 +40,15 @@ export default function EntryListItem({ entry, reloader }) {
         }
     }
 
-    const cutoffDescriptionCss = {
-        height: 100,
+    const cutoffAbstractCss = {
+        height: 50,
         overflow: "hidden",
         maskImage: "linear-gradient(to top, transparent 0%, white 100%)",
         maskPosition: "top center",
         maskRepeat: "no-repeat"
 
     };
-    const fullDescriptionCss = {
+    const fullAbstractCss = {
         height: "fit-content",
         mask: "none"
     }
@@ -56,10 +56,14 @@ export default function EntryListItem({ entry, reloader }) {
     return (
         <li className={"w-full [border:_1px_solid_#b0b0b0] rounded-sm p-[10px] flex flex-col gap-[10px]"}>
             <div className={"w-full flex flex-row gap-[10px]"}>
-                <Image src={articleIcon} width={80} height={97} alt={"Article icon"} className={"m-[20px]"} />
+                <Image src={articleIcon} width={80} height={97} alt={"Article icon"} className={"mx-[20px]"} />
                 <div className={"w-full flex flex-col gap-[10px]"}>
                     <h4 className={"w-full text-lg font-bold"}>{entry.title}</h4>
-                    <p className={"text-sm"}>added by <Link href={`/user/${entry.userId}`} className={"font-bold hover:underline"}>{user ? user.id === entry.userId ? "you" : entry.userFullName : entry.userFullName}</Link></p>
+                    {
+                        viewUser ?
+                            <p className={"text-sm"}>added by <Link href={`/user/${entry.userId}`} className={"font-bold hover:underline"}>{user ? user.id === entry.userId ? "you" : entry.userFullName : entry.userFullName}</Link></p>
+                        : <></>
+                    }
                     {
                         user && user.id === entry.userId ? (
                             <div className={"flex flex-row gap-[10px]"}>
@@ -73,10 +77,10 @@ export default function EntryListItem({ entry, reloader }) {
             <div className={"flex flex-col gap-[10px]"}>
                 <p><b>Link:</b> <Link href={entry.url} className={"hover:underline"} target={"_blank"}>{entry.url}</Link></p>
                 <div>
-                    <h5 className={"font-bold"}>Description:</h5>
+                    <h5 className={"font-bold"}>Abstract:</h5>
                     <div className={"flex flex-col items-center cursor-pointer"}>
-                        <p className={"w-full"} style={fullDescription ? fullDescriptionCss : cutoffDescriptionCss} onClick={() => setFullDescription(!fullDescription)} title={fullDescription ? "Hide description" : "Show description"}>{entry.description}</p>
-                        <Image src={fullDescription ? "/angle-top-icon.png" : "/angle-bottom-icon.png"} width={20} height={13} alt={fullDescription ? "Up arrow icon" : "Down arrow icon"} />
+                        <p className={"w-full"} style={viewAbstract ? fullAbstractCss : cutoffAbstractCss} onClick={() => setViewAbstract(!viewAbstract)} title={viewAbstract ? "Hide abstract" : "Show abstract"}>{entry.description}</p>
+                        <Image src={viewAbstract ? "/angle-top-icon.png" : "/angle-bottom-icon.png"} width={20} height={13} alt={viewAbstract ? "Up arrow icon" : "Down arrow icon"} />
                     </div>
                 </div>
             </div>

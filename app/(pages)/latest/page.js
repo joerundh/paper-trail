@@ -7,7 +7,7 @@ export default async function Page({ params }) {
         <>
             <div className={"w-full flex flex-col gap-[10px]"}>
                 <h3>Latest entries</h3>
-                <EntryList />
+                <EntryList viewUsers={true} />
             </div>
         </>
     )

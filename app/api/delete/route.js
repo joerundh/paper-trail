@@ -36,7 +36,7 @@ export async function DELETE(request) {
     // All good so far, time to remove from the database
     try {
         const db = await connectToDatabase();
-        const entries = await db.collection("entries");
+        const entries = db.collection("entries");
 
         await entries.deleteOne({ _id: ObjectId.createFromHexString(params.get("entryId")) });
         return Response.json({ message: "Entry deleted." })

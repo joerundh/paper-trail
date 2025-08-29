@@ -15,7 +15,7 @@ export default function Paginator({ children, count, page, pageSetter, perPage, 
                         <option value={20}>20</option>
                     </select>
                 </label>
-                <span>{ count ? `${page*perPage + 1} - ${page === pageCount - 1 ? count.current : (page + 1)*perPage} out of ${count.current}` : ""}</span>
+                <span>{ count.current ? `${page*perPage + 1} - ${page === pageCount - 1 ? count.current : (page + 1)*perPage} out of ${count.current}` : "0 - 0 of 0"}</span>
             </div>
             {
                 children
@@ -26,33 +26,30 @@ export default function Paginator({ children, count, page, pageSetter, perPage, 
                     page === 0 ?
                         <span className={"p-[5px] [color:_#a0a0a0] cursor-default"}>First</span>
                     :
-                        <button className={"p-[5px] cursor-pointer"} onClick={() => pageSetter(0)} title={"Go to first page"}>First</button>
+                        <button className={"p-[5px] cursor-pointer hover:underline"} onClick={() => pageSetter(0)} title={"Go to first page"}>First</button>
                 }
                 {
                     // "Prev" button
                     page === 0 ?
                         <span className={"p-[5px] [color:_#a0a0a0] cursor-default"}>Prev</span>
                     :
-                        <button className={"p-[5px] cursor-pointer"} onClick={() => pageSetter(page - 1)} title={"Go to previous page"}>Prev</button>
+                        <button className={"p-[5px] cursor-pointer hover:underline"} onClick={() => pageSetter(page - 1)} title={"Go to previous page"}>Prev</button>
 
                 }
-                {
-                    // Page counter
-                    count ? <span className={"p-[5px]"}>{page + 1} / {pageCount}</span> : <></>
-                }
+                <span className={"p-[5px]"}>{count.current ? `${page + 1} / ${pageCount}` : "0 / 0" }</span>
                 {
                     // "Next" button
                     page === pageCount - 1 ?
                         <span className={"p-[5px] [color:_#a0a0a0] cursor-default"}>Prev</span>
                     :
-                        <button className={"p-[5px] cursor-pointer"} onClick={() => pageSetter(page + 1)} title={"Go to next page"}>Next</button>
+                        <button className={"p-[5px] cursor-pointer hover:underline"} onClick={() => pageSetter(page + 1)} title={"Go to next page"}>Next</button>
                 }
                 {
                     // "Last" button
                     page === pageCount - 1 ?
                         <span className={"p-[5px] [color:_#a0a0a0] cursor-default"}>Last</span>
                     :
-                        <button className={"p-[5px] cursor-pointer"} onClick={() => pageSetter(0)} title={"Go to last page"}>Last</button>
+                        <button className={"p-[5px] cursor-pointer hover:underline"} onClick={() => pageSetter(0)} title={"Go to last page"}>Last</button>
                 }
             </div>
         </div>

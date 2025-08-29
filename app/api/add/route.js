@@ -10,12 +10,10 @@ export async function POST(request) {
     const req = await request.json();
 
     if (!req.userId) {
-        console.log("No client ID provided.")
         return Response.json({ message: "No client ID provided." }, { status: 401 })
     }
     if (req.userId !== clientId) {
-        console.log("Mismatched IDs")
-        return Response.json({ message: "Mismatched IDs" }, { status: 401 })
+        return Response.json({ message: "Mismatched user IDs" }, { status: 401 })
     }
 
     try {
@@ -23,10 +21,10 @@ export async function POST(request) {
         const entries = db.collection("entries");
 
         const result = await entries.insertOne({
-            userId: clientId,
-            userFullName: req.userFullName,
+            userId: clientId.split("_")[1],
+            userFirstName: req.userFirstName,
             title: req.title,
-            description: req.description,
+            abstract: req.abstract,
             url: req.url,
             createdAt: new Date(),
             isPublic: req.makePublic

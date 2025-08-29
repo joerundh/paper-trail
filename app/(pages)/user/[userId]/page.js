@@ -1,3 +1,4 @@
+import EntryList from "@/app/ui/EntryList";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 
 export default async function Page({ params }) {
@@ -9,7 +10,7 @@ export default async function Page({ params }) {
     catch (e) {
         return (
             <>
-                <h3>User not found</h3>
+                <h3 className={"font-bold"}>User not found</h3>
                 <p>An invalid user ID was provided.</p>
             </>
         )
@@ -17,7 +18,8 @@ export default async function Page({ params }) {
 
     return (
         <>
-            <h3>{user.firstName}'s entries</h3>
+            <h3 className={"font-bold"}>{user.firstName}'s entries</h3>
+            <EntryList userId={userId} viewUsers={false} />
         </>
     )
 }

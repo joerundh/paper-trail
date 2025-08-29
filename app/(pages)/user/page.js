@@ -1,8 +1,9 @@
-import { currentUser } from "@clerk/nextjs/server"
+import EntryList from "@/app/ui/EntryList";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function Page() {
-    const user = await currentUser();
-    if (!user) {
+    const { userId } = await auth();
+    if (!userId) {
         return (
             <>
                 <h3>You are not logged in</h3>
@@ -14,6 +15,7 @@ export default async function Page() {
     return (
         <>
             <h3>Your entries</h3>
+            <EntryList userId={userId} viewUsers={false} />
         </>
     )
 }
