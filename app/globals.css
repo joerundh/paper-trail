@@ -56,6 +56,11 @@ h2 {
   color: white;
 }
 
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
 main {
   background-color: white;
   width: 100%;

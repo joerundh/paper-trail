@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/dist/types/server"
+import { currentUser } from "@clerk/nextjs/server"
 
 export default async function Page() {
     const user = await currentUser();

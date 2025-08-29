@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-const dbName = "PaperList"
+const dbName = "PaperTrailDb";
 
 if (!uri) {
     throw new Error("No URI provided.");

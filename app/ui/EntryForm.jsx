@@ -1,23 +1,148 @@
+"use client";
 
+import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 
-export default function EntryForm() {
+export default function EntryForm({ userId }) {
+    const { user, isLoaded: userLoaded, error: userError } = useUser();
+
     const [ submitted, setSubmitted ] = useState(false);
 
     const [ title, setTitle ] = useState("");
-    const [ makePublic, setMakePublic ] = useState(false);
+    const [ description, setDescription ] = useState("");
+    const [ url, setUrl ] = useState("");
+    const [ makePublic, setMakePublic ] = useState(true);
+
+    const [ titleMissing, setTitleMissing ] = useState(false);
+    const [ descriptionMissing, setDescriptionMissing ] = useState(false);
+    const [ urlMissing, setUrlMissing ] = useState(false);
+
+    const [ error, setError ] = useState(false);
+
+    const errorMessage = () => {
+        if (titleMissing) {
+            return (
+                <p className={"w-full text-sm"}>A title is missing!</p>
+            )
+        }
+        if (descriptionMissing) {
+            return (
+                <p className={"w-full text-sm"}>A description is missing!</p>
+            )
+        }
+        if (urlMissing) {
+            return (
+                <p className={"w-full text-sm"}>A URL is missing!</p>
+            )
+        }
+        if (error) {
+            return (
+                <p className={"w-full text-sm"}>An error occurred, try again later.</p>
+            )
+        }
+        return <></>
+    }
+
+    const submitForm = async e => {
+        e.preventDefault();
+        
+        if (title === "") {
+            setTitleMissing(true);
+            return;
+        }
+        if (description === "") {
+            setDescriptionMissing(true);
+            return;
+        }
+        if (url === "") {
+            setUrlMissing(true);
+            return;
+        }
+
+        const res = await fetch("/api/post", {
+            method: "POST",
+            body: JSON.stringify({
+                userId: user.id,
+                userFullName: user.fullName,
+                title: title,
+                description: description,
+                url: url,
+                makePublic: makePublic
+            })
+        });
+        if (!res.ok) {
+            setError(true);
+            return;
+        }
+        setSubmitted(true);
+    }
+
+    const clearForm = () => {
+        setTitle("");
+        setDescription("");
+        setUrl("");
+        setMakePublic(true);
+    }
+
+    useEffect(() => {
+        clearForm();
+    }, [ submitted ]);
+
+    useEffect(() => {
+        setTitleMissing(false);
+    }, [ title ]);
+
+    useEffect(() => {
+        setDescriptionMissing(false);
+    }, [ description ]);
+
+    useEffect(() => {
+        setUrlMissing(false)
+    }, [ url ]);
+
+    if (!userLoaded) {
+        return (
+            <p className={"w-full center"}>Loading...</p>
+        )
+    }
+
+    if (submitted) {
+        return (
+            <>
+                <p>You entry has been submitted. Click <span className={"text-bold cursor-pointer"} onClick={e => setSubmitted(false)}>here</span> to submit another one.</p>
+            </>
+        )
+    }
 
     return (
         <>
-            <form>
-                <label>
-                    Title: <input type="text" value={title} onChange={e => setTitle(e.target.value)} />
+            <form onSubmit={e => submitForm(e)} className={"w-full flex flex-col gap-[10px] justify-start items-start"}>
+                {
+                    error ?
+                        errorMessage()
+                    :
+                        <p>All fields are required.</p>
+                }
+                <label className={"flex flex-row justify-start items-center gap-[5px]"}>
+                    <span className={"w-[90px]"}>Title:</span>
+                    <input type="text" value={title} onChange={e => setTitle(e.target.value)} className={`w-[480px] px-[3px] [border:_1px_solid_black] rounded-sm ${titleMissing ? "bg-[#ffe0e0]" : ""}`} />
                 </label>
-                <label>
-
+                <label className={"flex flex-row justify-start items-start gap-[5px]"}>
+                    <span className={"w-[90px]"}>Description:</span>
+                    <textarea value={description} onChange={e => setDescription(e.target.value)} className={`w-[480px] h-[200px] px-[3px] [border:_1px_solid_black] resize-y rounded-sm outline-none ${descriptionMissing ? "bg-[#ffe0e0]" : ""}`}></textarea>
                 </label>
-                <label>
-                    Show in public list: <input type="checkbox" checked={makePublic} onChange={e => setMakePublic(e.target.checked)} />
+                <label className={"flex flex-row justify-start items-start gap-[5px]"}>
+                    <span className={"w-[90px]"}>URL:</span>
+                    <input type="text" value={url} onChange={e => setUrl(e.target.value)} className={`w-[480px] [border:_1px_solid_black] px-[3px] rounded-sm  ${urlMissing ? "bg-[#ffe0e0]" : ""}`} />
                 </label>
+                <label className={"flex flex-row gap-[5px] justify-start items-center"}>
+                    <span>Show in public list:</span>
+                    <input type="checkbox" checked={makePublic} onChange={e => setMakePublic(e.target.checked)} />
+                </label>
+                <div className={"w-full flex flex-row gap-[10px] justify-center"}>
+                    <button onClick={submitForm} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Submit</button>
+                    <button onClick={clearForm} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Clear</button>
+                </div>
             </form>
         </>
     )

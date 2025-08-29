@@ -1,3 +1,4 @@
+import { connectToDatabase } from "@/app/lib/mongoDBconnect";
 import { auth } from "@clerk/nextjs/dist/types/server";
 
 /*
@@ -28,5 +29,16 @@ export default async function DELETE(request) {
     // If the request has no entry ID, throw bad request
     if (!req.entryId) {
         return Response.json({ message: "No entry ID provided." }, { status: 400 });
+    }
+
+    // All good so far, time to remove from the database
+    try {
+        const db = await connectToDatabase();
+        const entries = db.collection("entries");
+
+        
+    }
+    catch (e) {
+        return Response.json({ message: "An error occurred." }, { status: 500 });
     }
 }
