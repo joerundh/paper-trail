@@ -17,6 +17,10 @@ export default function EntryListItem({ entry, reloader }) {
     const [ url, setUrl ] = useState(entry.url);
     const [ makePublic, setMakePublic ] = useState(entry.isPublic);
 
+    const editEntry = async () => {
+        
+    }
+
     const deleteEntry = async () => {
         if (confirm("Are you sure you want to delete the entry?")) {
             const params = new URLSearchParams();
@@ -39,7 +43,10 @@ export default function EntryListItem({ entry, reloader }) {
     const cutoffDescriptionCss = {
         height: 100,
         overflow: "hidden",
-        background: "linear-gradient(transparent 150px, white)"
+        maskImage: "linear-gradient(to top, transparent 0%, white 100%)",
+        maskPosition: "top center",
+        maskRepeat: "no-repeat"
+
     };
     const fullDescriptionCss = {
         height: "fit-content",
@@ -49,7 +56,7 @@ export default function EntryListItem({ entry, reloader }) {
     return (
         <li className={"w-full [border:_1px_solid_#b0b0b0] rounded-sm p-[10px] flex flex-col gap-[10px]"}>
             <div className={"w-full flex flex-row gap-[10px]"}>
-                <Image src={articleIcon} width={100} height={117} alt={"Article icon"} />
+                <Image src={articleIcon} width={80} height={97} alt={"Article icon"} className={"m-[20px]"} />
                 <div className={"w-full flex flex-col gap-[10px]"}>
                     <h4 className={"w-full text-lg font-bold"}>{entry.title}</h4>
                     <p className={"text-sm"}>added by <Link href={`/user/${entry.userId}`} className={"font-bold hover:underline"}>{user ? user.id === entry.userId ? "you" : entry.userFullName : entry.userFullName}</Link></p>
@@ -67,7 +74,10 @@ export default function EntryListItem({ entry, reloader }) {
                 <p><b>Link:</b> <Link href={entry.url} className={"hover:underline"} target={"_blank"}>{entry.url}</Link></p>
                 <div>
                     <h5 className={"font-bold"}>Description:</h5>
-                    <p className={"cursor-pointer"} style={fullDescription ? fullDescriptionCss : cutoffDescriptionCss} onClick={() => setFullDescription(!fullDescription)}>{entry.description}</p>
+                    <div className={"flex flex-col items-center cursor-pointer"}>
+                        <p className={"w-full"} style={fullDescription ? fullDescriptionCss : cutoffDescriptionCss} onClick={() => setFullDescription(!fullDescription)} title={fullDescription ? "Hide description" : "Show description"}>{entry.description}</p>
+                        <Image src={fullDescription ? "/angle-top-icon.png" : "/angle-bottom-icon.png"} width={20} height={13} alt={fullDescription ? "Up arrow icon" : "Down arrow icon"} />
+                    </div>
                 </div>
             </div>
         </li>

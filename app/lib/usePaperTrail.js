@@ -19,33 +19,42 @@ export default function usePaperTrail(obj) {
 
     const isLoading = !(data || error);
 
-    const reload = () => {
-        setData(null);
+    const fetchData = async () => {
+        const params = new URLSearchParams();
+        if (obj.userId) {
+            params.append("userId", obj.userId);
+        }
+        if (obj.page) {
+            params.append("offset", obj.page*obj.perPage);
+        }
+        if (obj.perPage) {
+            params.append("limit", obj.perPage);
+        }
+
+        const res = await fetch(`${obj.url}${params.size ? "?" : ""}${params.toString()}`);
+
+        if (!res.ok) {
+        setError({ message: "An error occurred." });
+        }
+
+        const json = await res.json();
+        setData(json);
     }
 
     useEffect(() => {
-        (async () => {
-            const params = new URLSearchParams();
-            if (obj.userId) {
-                params.append("userId", obj.userId);
-            }
-            if (obj.page) {
-                params.append("page", obj.page);
-            }
-            if (obj.perPage) {
-                params.append("page", obj.perPage);
-            }
-
-            const res = await fetch(`${obj.url}${params.size ? "?" : ""}${params.toString()}`);
-
-            if (!res.ok) {
-            setError({ message: "An error occurred." });
-            }
-
-            const json = await res.json();
-            setData(json);
-        })();
+        fetchData();
     }, []);
+
+    useEffect(() => {
+        if (!data) {
+            fetchData();
+        }
+    }, [ data ])
+
+    const reload = () => {
+        setError(null)
+        setData(null);
+    }
 
     return [ data, isLoading, error, reload ];
 }

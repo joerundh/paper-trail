@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Paginator from "./Paginator";
 import { useUser } from "@clerk/nextjs";
 import usePaperTrail from "../lib/usePaperTrail";
@@ -22,6 +22,10 @@ export default function EntryList({ userId }) {
         page: page,
         perPage: perPage
     });
+
+    useEffect(() => {
+        reload();
+    }, [ page, perPage ])
 
     if (error) {
         return (

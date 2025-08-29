@@ -4,7 +4,6 @@ import { Geist, Geist_Mono, Libertinus_Math } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
-import { redirect } from "next/dist/server/api-utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +43,7 @@ export default async function RootLayout({ children }) {
                 {
                   user ? (
                     <>
-                      <Link href="/add" title="Add a new entry">New entry</Link>
+                      <Link href="/add" className={"hover:underline cursor-pointer"} title="Add a new entry">New entry</Link>
                       <Link href={"/user"} className={"cursor-pointer hover:underline"} title="My entries">My entries</Link>
                       <SignOutButton className={"hover:underline cursor-pointer"} title="Sign out">Sign out</SignOutButton>
                     </>

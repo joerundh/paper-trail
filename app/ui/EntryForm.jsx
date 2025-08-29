@@ -109,7 +109,7 @@ export default function EntryForm({ userId }) {
     if (submitted) {
         return (
             <>
-                <p>You entry has been submitted. Click <span className={"text-bold cursor-pointer"} onClick={e => setSubmitted(false)}>here</span> to submit another one.</p>
+                <p>You entry has been submitted. Click <span className={"font-bold cursor-pointer underline"} onClick={e => setSubmitted(false)}>here</span> to submit another one.</p>
             </>
         )
     }
