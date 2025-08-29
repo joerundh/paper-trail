@@ -30,9 +30,9 @@ export default function EntryListItem({ entry }) {
                     <p className={"text-sm"}>added by <Link href={`/user/${entry.userId}`} className={"font-bold hover:underline"}>{user ? user.id === entry.userId ? "you" : entry.userFullName : entry.userFullName}</Link></p>
                     {
                         user && user.id === entry.userId ? (
-                            <div className={"flex flex-row gap-[10px] justify-center items-center"}>
-                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px]"}>Edit</button>
-                                <button>Delete</button>
+                            <div className={"flex flex-row gap-[10px]"}>
+                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center"}><Image src={"/pencil-icon.png"} alt={"Edit icon"} width={15} height={15} /> Edit</button>
+                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center"}><Image src={"/recycle-bin-icon.png"} alt={"Delete icon"} width={15} height={15} /> Delete</button>
                             </div>
                         ) : <></>
                     }
