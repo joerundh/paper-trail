@@ -23,8 +23,6 @@ export default function usePaperTrail(obj) {
         setData(null);
     }
 
-
-
     useEffect(() => {
         (async () => {
             const params = new URLSearchParams();
