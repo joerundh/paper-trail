@@ -4,9 +4,12 @@ import { useState } from "react"
 import articleIcon from "@/public/article-icon.png";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function EntryListItem({ entry, viewUser, reloader }) {
     const { user, isLoading, error } = useUser();
+
+    const router = useRouter();
 
     const [ viewAbstract, setViewAbstract ] = useState(false);
 
@@ -61,13 +64,13 @@ export default function EntryListItem({ entry, viewUser, reloader }) {
                     <h4 className={"w-full text-lg font-bold"}>{entry.title}</h4>
                     {
                         viewUser ?
-                            <p className={"text-sm"}>added by <Link href={`/user/${entry.userId}`} className={"font-bold hover:underline"}>{user ? user.id === entry.userId ? "you" : entry.userFullName : entry.userFullName}</Link></p>
+                            <p className={"text-sm"}>added by <Link href={`/user/${entry.userId}`} className={"font-bold hover:underline"}>{user ? user.id.split("_")[1] === entry.userId ? "you" : entry.userFirstName : entry.userFirstName}</Link></p>
                         : <></>
                     }
                     {
-                        user && user.id === entry.userId ? (
+                        user && user.id.split("_")[1] === entry.userId ? (
                             <div className={"flex flex-row gap-[10px]"}>
-                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center cursor-pointer"}><Image src={"/pencil-icon.png"} alt={"Edit icon"} width={15} height={15} /> Edit</button>
+                                <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center cursor-pointer"} onClick={() => router.push(`/edit/${entry._id}`)}><Image src={"/pencil-icon.png"} alt={"Edit icon"} width={15} height={15} /> Edit</button>
                                 <button className={"p-[3px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] w-[100px] flex flex-row gap-[5px] justify-center items-center cursor-pointer"} onClick={deleteEntry}><Image src={"/recycle-bin-icon.png"} alt={"Delete icon"} width={15} height={15} /> Delete</button>
                             </div>
                         ) : <></>
@@ -79,7 +82,7 @@ export default function EntryListItem({ entry, viewUser, reloader }) {
                 <div>
                     <h5 className={"font-bold"}>Abstract:</h5>
                     <div className={"flex flex-col items-center cursor-pointer"}>
-                        <p className={"w-full"} style={viewAbstract ? fullAbstractCss : cutoffAbstractCss} onClick={() => setViewAbstract(!viewAbstract)} title={viewAbstract ? "Hide abstract" : "Show abstract"}>{entry.description}</p>
+                        <p className={"w-full"} style={viewAbstract ? fullAbstractCss : cutoffAbstractCss} onClick={() => setViewAbstract(!viewAbstract)} title={viewAbstract ? "Hide abstract" : "Show abstract"}>{entry.abstract}</p>
                         <Image src={viewAbstract ? "/angle-top-icon.png" : "/angle-bottom-icon.png"} width={20} height={13} alt={viewAbstract ? "Up arrow icon" : "Down arrow icon"} />
                     </div>
                 </div>

@@ -1,4 +1,3 @@
-import EntryForm from "@/app/ui/EntryForm";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function Page() {
@@ -14,8 +13,8 @@ export default async function Page() {
 
     return (
         <>
-            <h3>Add an entry</h3>
-            <EntryForm />
+            <h3>No entry selected</h3>
+            <p>Cannot open editor.</p>
         </>
     )
 }
