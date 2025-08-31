@@ -1,14 +1,10 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function EntryEditor({ entry }) {
     const { user, isLoaded: userLoaded, error: userError } = useUser();
-
-    const router = useRouter();
 
     const [ edited, setEdited ] = useState(false);
 
@@ -81,12 +77,6 @@ export default function EntryEditor({ entry }) {
         setEdited(true);
     }
 
-    const cancelEdit = async () => {
-        if (confirm("Are you sure you want to cancel?")) {
-            router.back();
-        }
-    }
-
     useEffect(() => {
         setTitleMissing(false);
     }, [ title ]);
@@ -108,7 +98,7 @@ export default function EntryEditor({ entry }) {
     if (edited) {
         return (
             <>
-                <p>You entry has been edited. Click <Link onClick={() => router.back()} className={"font-bold cursor-pointer underline"}>here</Link> here to go back.</p>
+                <p>You entry has been edited.</p>
             </>
         )
     }
@@ -140,7 +130,6 @@ export default function EntryEditor({ entry }) {
                 </label>
                 <div className={"w-full flex flex-row gap-[10px] justify-center"}>
                     <button onClick={saveEdit} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Save</button>
-                    <button onClick={cancelEdit} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Cancel</button>
                 </div>
             </form>
         </>
