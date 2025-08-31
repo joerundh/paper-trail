@@ -58,7 +58,7 @@ export default function EntryListItem({ entry, viewUser, reloader }) {
 
     return (
         <li className={"w-full [border:_1px_solid_#b0b0b0] rounded-sm p-[10px] flex flex-col gap-[10px]"}>
-            <div className={"w-full flex flex-row gap-[10px]"}>
+            <div className={"w-full flex flex-row items-start gap-[10px]"}>
                 <Image src={articleIcon} width={80} height={97} alt={"Article icon"} className={"mx-[20px]"} />
                 <div className={"w-full flex flex-col gap-[10px]"}>
                     <h4 className={"w-full text-lg font-bold"}>{entry.title}</h4>
@@ -81,8 +81,8 @@ export default function EntryListItem({ entry, viewUser, reloader }) {
                 <p><b>Link:</b> <Link href={entry.url} className={"hover:underline"} target={"_blank"}>{entry.url}</Link></p>
                 <div>
                     <h5 className={"font-bold"}>Abstract:</h5>
-                    <div className={"flex flex-col items-center cursor-pointer"}>
-                        <p className={"w-full"} style={viewAbstract ? fullAbstractCss : cutoffAbstractCss} onClick={() => setViewAbstract(!viewAbstract)} title={viewAbstract ? "Hide abstract" : "Show abstract"}>{entry.abstract}</p>
+                    <div className={"flex flex-col items-center cursor-pointer"} onClick={() => setViewAbstract(!viewAbstract)}>
+                        <p className={"w-full"} style={viewAbstract ? fullAbstractCss : cutoffAbstractCss} title={viewAbstract ? "Hide abstract" : "Show abstract"}>{entry.abstract}</p>
                         <Image src={viewAbstract ? "/angle-top-icon.png" : "/angle-bottom-icon.png"} width={20} height={13} alt={viewAbstract ? "Up arrow icon" : "Down arrow icon"} />
                     </div>
                 </div>

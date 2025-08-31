@@ -1,4 +1,4 @@
-import EntryForm from "@/app/ui/EntryForm";
+import EntryEditor from "@/app/ui/EntryEditor";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function Page({ params }) {
@@ -14,7 +14,7 @@ export default async function Page({ params }) {
 
     const { entryId } = await params;
 
-    const res = await fetch(`/api/entries?entryId=${entryId}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/entries/${entryId}`);
     if (!res.ok) {
         return (
             <>
@@ -28,7 +28,7 @@ export default async function Page({ params }) {
     return (
         <>
             <h3 className={"font-bold"}>Edit entry</h3>
-            <EntryForm entry={entry} />
+            <EntryEditor entry={entry.entry} />
         </>
     )
 }

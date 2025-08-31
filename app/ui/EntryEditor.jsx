@@ -1,20 +1,21 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function EntryForm() {
+export default function EntryEditor({ entry }) {
     const { user, isLoaded: userLoaded, error: userError } = useUser();
 
     const router = useRouter();
 
-    const [ submitted, setSubmitted ] = useState(false);
+    const [ edited, setEdited ] = useState(false);
 
-    const [ title, setTitle ] = useState("");
-    const [ abstract, setAbstract ] = useState("");
-    const [ url, setUrl ] = useState("");
-    const [ makePublic, setMakePublic ] = useState(true);
+    const [ title, setTitle ] = useState(entry.title);
+    const [ abstract, setAbstract ] = useState(entry.abstract);
+    const [ url, setUrl ] = useState(entry.url);
+    const [ makePublic, setMakePublic ] = useState(entry.isPublic);
 
     const [ titleMissing, setTitleMissing ] = useState(false);
     const [ abstractMissing, setAbstractMissing ] = useState(false);
@@ -46,7 +47,7 @@ export default function EntryForm() {
         return <></>
     }
 
-    const submitForm = async e => {
+    const saveEdit = async e => {
         e.preventDefault();
         
         if (title === "") {
@@ -62,11 +63,11 @@ export default function EntryForm() {
             return;
         }
 
-        const res = await fetch("/api/add", {
-            method: "POST",
+        const res = await fetch("/api/edit", {
+            method: "PUT",
             body: JSON.stringify({
+                entryId: entry._id,
                 userId: user.id,
-                userFirstName: user.firstName,
                 title: title,
                 abstract: abstract,
                 url: url,
@@ -77,19 +78,14 @@ export default function EntryForm() {
             setError(true);
             return;
         }
-        setSubmitted(true);
+        setEdited(true);
     }
 
-    const clearForm = () => {
-        setTitle("");
-        setAbstract("");
-        setUrl("");
-        setMakePublic(true);
+    const cancelEdit = async () => {
+        if (confirm("Are you sure you want to cancel?")) {
+            router.back();
+        }
     }
-
-    useEffect(() => {
-        clearForm();
-    }, [ submitted ]);
 
     useEffect(() => {
         setTitleMissing(false);
@@ -105,14 +101,14 @@ export default function EntryForm() {
 
     if (!userLoaded) {
         return (
-            <p className={"w-full center"}>Loading...</p>
+            <p className={"w-full center"}>Loading editor...</p>
         )
     }
 
-    if (submitted) {
+    if (edited) {
         return (
             <>
-                <p>You entry has been submitted. Click <span className={"font-bold cursor-pointer underline"} onClick={e => setSubmitted(false)}>here</span> to submit another one.</p>
+                <p>You entry has been edited. Click <Link onClick={() => router.back()} className={"font-bold cursor-pointer underline"}>here</Link> here to go back.</p>
             </>
         )
     }
@@ -143,8 +139,8 @@ export default function EntryForm() {
                     <input type="checkbox" checked={makePublic} onChange={e => setMakePublic(e.target.checked)} />
                 </label>
                 <div className={"w-full flex flex-row gap-[10px] justify-center"}>
-                    <button onClick={submitForm} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Submit</button>
-                    <button onClick={clearForm} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Clear</button>
+                    <button onClick={saveEdit} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Save</button>
+                    <button onClick={cancelEdit} className={"w-[150px] p-[5px] [border:_1px_solid_#b0b0b0] [background-color:_#d0d0d0] rounded-md"}>Cancel</button>
                 </div>
             </form>
         </>
