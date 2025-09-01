@@ -43,7 +43,7 @@ export default function EntryList({ userId, viewUsers }) {
                 isLoading ? (
                     <p className={"w-full text-center text-sm"}>Loading entries...</p>
                 ) :
-                    count ? (
+                    count.current ? (
                         <ul className={"w-full flex flex-col gap-[10px] p-0"}>
                             {
                                 data.entries.map((entry, index) => (
@@ -55,5 +55,5 @@ export default function EntryList({ userId, viewUsers }) {
                         <p className={"w-full text-center text-sm"}>No entries found.</p>
             }
         </Paginator>
-    )
+    );
 }
