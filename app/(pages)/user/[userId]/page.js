@@ -5,7 +5,7 @@ export default async function Page({ params }) {
     const userId = params.userId;
 
     try {
-        const user = await clerkClient.users.getUser(userId);
+        const user = await clerkClient.users.getUser(`user_${userId}`);
     }
     catch (e) {
         return (
@@ -19,7 +19,7 @@ export default async function Page({ params }) {
     return (
         <>
             <h3 className={"font-bold"}>{user.firstName}'s entries</h3>
-            <EntryList userId={userId} viewUsers={false} />
+            <EntryList userId={`user_${userId}`} viewUsers={false} />
         </>
     )
 }
