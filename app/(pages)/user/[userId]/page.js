@@ -19,7 +19,7 @@ export default async function Page({ params }) {
     return (
         <>
             <h3 className={"font-bold"}>{user.firstName}'s entries</h3>
-            <EntryList userId={`user_${userId}`} viewUsers={false} />
+            <EntryList userId={userId} viewUsers={false} />
         </>
     )
 }
