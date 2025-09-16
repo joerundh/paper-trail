@@ -13,8 +13,6 @@ export default async function Page() {
         )
     }
 
-    console.log(userId)
-
     return (
         <>
             <h3>Your entries</h3>

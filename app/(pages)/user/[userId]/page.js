@@ -7,14 +7,10 @@ export default async function Page({ params }) {
 
     const client = await currentUser();
 
+    const user = {};
     try {
-        const user = await clerkClient.users.getUser(`user_${userId}`);
-        return (
-            <>
-                <h3 className={"font-bold"}>{userId === client.id.split("_")[1] ? "Your" : `${user.firstName}'s`} entries</h3>
-                <EntryList userId={`${userId}`} viewUsers={false} />
-            </>
-        )
+        const clerkUser = await clerkClient.users.getUser(`user_${userId}`);
+        user.firstName = clerkUser.firstName;
     }
     catch (e) {
         return (
@@ -24,4 +20,11 @@ export default async function Page({ params }) {
             </>
         )
     }
+
+    return (
+        <>
+            <h3 className={"font-bold"}>{userId === client?.id.split("_")[1] ? "Your" : `${user.firstName}'s`} entries</h3>
+            <EntryList userId={userId} viewUsers={false} />
+        </>
+    )
 }
