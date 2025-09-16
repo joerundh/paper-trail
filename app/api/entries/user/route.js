@@ -22,12 +22,12 @@ export async function GET(request) {
         const db = await connectToDatabase();
         const entries = db.collection("entries");
 
-        const results = await entries.find({ userId: userId.split("_")[1], isPublic: true })      // Find only public entries by indicated user
+        const results = await entries.find({ userId: userId, isPublic: true })      // Find only public entries by indicated user
                             .sort({ createdAt: -1 })                                // Sort according to date
                             .skip(offset)                                           // Self-explanatory
                             .limit(limit)                                           // Ditto
                             .toArray();
-        const count = await entries.countDocuments({ isPublic: true });
+        const count = await entries.countDocuments({ userId: userId, isPublic: true });
         
         return Response.json({ count: count, entries: results });
     }

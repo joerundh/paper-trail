@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 
 export default async function Page() {
     const { userId } = await auth();
+
     if (!userId) {
         return (
             <>
@@ -12,10 +13,12 @@ export default async function Page() {
         )
     }
 
+    console.log(userId)
+
     return (
         <>
             <h3>Your entries</h3>
-            <EntryList userId={userId} viewUsers={false} />
+            <EntryList userId={userId.split("_")[1]} viewUsers={false} />
         </>
     )
 }
